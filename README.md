@@ -1,4 +1,4 @@
-# 🩸 BloodNet — Enhanced DBMS Project
+# 🩸 BloodNet 
 
 A Blood Donor Network web application demonstrating full-stack PHP + MySQL DBMS concepts, built with a clean, modular architecture and an interactive database visualizer for demonstration.
 
