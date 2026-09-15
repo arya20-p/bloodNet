@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Donors — BloodNet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .search-hero { background: linear-gradient(135deg,var(--red-50),var(--slate-50)); padding: var(--space-12) 0 0; border-bottom: 1px solid var(--border); }
+        .search-form-card { background: white; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); padding: var(--space-8); max-width: 860px; margin: 0 auto; }
+        .search-filters { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr auto; gap: var(--space-3); align-items: end; }
+        .results-section { padding: var(--space-10) 0; }
+        .results-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:var(--space-6); }
+        .donor-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-4); }
+        .donor-card { background: white; border-radius: var(--radius-lg); border: 1px solid var(--border); padding: var(--space-5); transition: var(--transition-base); }
+        .donor-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+        .donor-card-top { display:flex; align-items:center; gap:var(--space-3); margin-bottom:var(--space-4); }
+        .donor-avatar { width: 48px; height: 48px; border-radius: 50%; background: var(--primary-bg); display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:900; color:var(--primary); font-size:var(--text-lg); }
+        .donor-name { font-weight: 700; }
+        .donor-meta { font-size:var(--text-xs); color:var(--text-muted); }
+        .donor-details { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-2); font-size:var(--text-sm); margin-bottom:var(--space-4); }
+        .donor-detail { display:flex; align-items:center; gap:var(--space-1); color:var(--text-secondary); }
+        .donor-detail i { color:var(--primary); width:14px; }
+        .empty-state { text-align:center; padding:var(--space-16); color:var(--text-muted); }
+        .empty-state i { font-size:3rem; margin-bottom:var(--space-4); color:var(--slate-300); }
+        @media(max-width:768px){ .search-filters{grid-template-columns:1fr 1fr;} }
+        @media(max-width:480px){ .search-filters{grid-template-columns:1fr;} }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon"><i class="fas fa-droplet"></i></span>
+                <span class="logo-text">Blood<strong>Net</strong></span>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="find-donors.html" class="nav-link active">Find Donors</a>
+                <a href="request-blood.html" class="nav-link">Request Blood</a>
+                <a href="drives.html" class="nav-link">Drives</a>
+                <a href="../db-visualizer/index.html" class="nav-link nav-special"><i class="fas fa-database"></i> DB Viz</a>
+                <a href="donor/login.html" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="search-hero">
+        <div class="container">
+            <div class="section-header" style="margin-bottom:var(--space-8)">
+                <span class="section-tag">Search</span>
+                <h1 class="section-title">Find a Blood Donor</h1>
+                <p>Search our network of registered donors by blood group and location</p>
+            </div>
+            <div class="search-form-card">
+                <div class="search-filters">
+                    <div class="form-group" style="margin:0">
+                        <label class="form-label">Blood Group</label>
+                        <select class="form-control" id="filterBlood">
+                            <option value="">Any</option>
+                            <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+                            <option>O+</option><option>O-</option><option>AB+</option><option>AB-</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label class="form-label">City</label>
+                        <input type="text" class="form-control" id="filterCity" placeholder="e.g. Chennai">
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label class="form-label">State</label>
+                        <select class="form-control" id="filterState">
+                            <option value="">Any</option>
+                            <option>Tamil Nadu</option><option>Maharashtra</option><option>Karnataka</option>
+                            <option>Delhi</option><option>Telangana</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin:0">
+                        <label class="form-label">Availability</label>
+                        <select class="form-control" id="filterAvail">
+                            <option value="">Any</option>
+                            <option value="Available">Available</option>
+                            <option value="Unavailable">Unavailable</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="searchBtn" style="padding:var(--space-3) var(--space-6)">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <section class="results-section">
+        <div class="container">
+            <div class="results-header">
+                <span id="resultsCount" style="font-size:var(--text-sm);color:var(--text-secondary)">Showing all donors</span>
+                <div style="display:flex;gap:var(--space-2)">
+                    <button class="btn btn-ghost btn-sm" onclick="setView('grid')"><i class="fas fa-grip"></i></button>
+                    <button class="btn btn-ghost btn-sm" onclick="setView('list')"><i class="fas fa-list"></i></button>
+                </div>
+            </div>
+            <div class="donor-cards" id="donorResults">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </section>
+
+    <script type="module">
+        import { formatDate } from '../js/main.js';
+
+        const DEMO_DONORS = [
+            { id:1, name:'John Doe',     blood:'O+',  city:'Chennai',   state:'Tamil Nadu', gender:'Male',   avail:'Available',   last_donation:'2024-10-15' },
+            { id:2, name:'Jane Smith',   blood:'A-',  city:'Mumbai',    state:'Maharashtra',gender:'Female', avail:'Available',   last_donation:'2024-11-02' },
+            { id:3, name:'Ravi Kumar',   blood:'B+',  city:'Delhi',     state:'Delhi',      gender:'Male',   avail:'Unavailable', last_donation:'2025-01-20' },
+            { id:4, name:'Priya Nair',   blood:'AB+', city:'Bangalore', state:'Karnataka',  gender:'Female', avail:'Available',   last_donation:null },
+            { id:5, name:'Arjun Sharma', blood:'O-',  city:'Chennai',   state:'Tamil Nadu', gender:'Male',   avail:'Available',   last_donation:'2024-09-10' },
+            { id:6, name:'Meena Pillai', blood:'A+',  city:'Hyderabad', state:'Telangana',  gender:'Female', avail:'Available',   last_donation:'2024-12-01' },
+        ];
+
+        function renderDonors(donors) {
+            const container = document.getElementById('donorResults');
+            document.getElementById('resultsCount').textContent = `${donors.length} donor(s) found`;
+            if (!donors.length) {
+                container.innerHTML = `<div class="empty-state"><i class="fas fa-users-slash"></i><h3>No donors found</h3><p>Try changing your search filters.</p></div>`;
+                container.style.display = 'block';
+                return;
+            }
+            container.innerHTML = donors.map(d => `
+                <div class="donor-card">
+                    <div class="donor-card-top">
+                        <div class="donor-avatar">${d.name.split(' ').map(w=>w[0]).join('').slice(0,2)}</div>
+                        <div>
+                            <div class="donor-name">${d.name}</div>
+                            <div class="donor-meta">${d.gender || 'Donor'}</div>
+                        </div>
+                        <div style="margin-left:auto">
+                            <div class="blood-pill">${d.blood}</div>
+                        </div>
+                    </div>
+                    <div class="donor-details">
+                        <div class="donor-detail"><i class="fas fa-location-dot"></i>${d.city}, ${d.state}</div>
+                        <div class="donor-detail">
+                            <i class="fas fa-circle" style="color:${d.avail==='Available'?'var(--success)':'var(--slate-400)'}"></i>
+                            ${d.avail}
+                        </div>
+                        <div class="donor-detail"><i class="fas fa-calendar"></i>${d.last_donation ? formatDate(d.last_donation) : 'First time'}</div>
+                    </div>
+                    <div style="display:flex;gap:var(--space-2)">
+                        <button class="btn btn-primary btn-sm" style="flex:1"><i class="fas fa-phone"></i> Contact</button>
+                        <button class="btn btn-ghost btn-sm"><i class="fas fa-bookmark"></i></button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function doSearch() {
+            const blood = document.getElementById('filterBlood').value;
+            const city  = document.getElementById('filterCity').value.trim().toLowerCase();
+            const state = document.getElementById('filterState').value;
+            const avail = document.getElementById('filterAvail').value;
+
+            const results = DEMO_DONORS.filter(d =>
+                (!blood || d.blood === blood) &&
+                (!city  || d.city.toLowerCase().includes(city)) &&
+                (!state || d.state === state) &&
+                (!avail || d.avail === avail)
+            );
+            renderDonors(results);
+        }
+
+        window.setView = (v) => {
+            document.getElementById('donorResults').style.gridTemplateColumns = v === 'list'
+                ? '1fr' : '';
+        };
+
+        document.getElementById('searchBtn').addEventListener('click', doSearch);
+        document.getElementById('filterCity').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+
+        // Initial render
+        renderDonors(DEMO_DONORS);
+    </script>
+</body>
+</html>

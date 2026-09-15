@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donation Drives — BloodNet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <style>
+        .page-hero { background: linear-gradient(135deg,#f0fdf4,var(--slate-50)); padding: var(--space-12) 0; border-bottom:1px solid var(--border); }
+        .drives-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:var(--space-5); padding: var(--space-10) 0; }
+        .drive-card { background:white; border-radius:var(--radius-xl); border:1px solid var(--border); overflow:hidden; transition:var(--transition-base); }
+        .drive-card:hover { box-shadow:var(--shadow-lg); transform:translateY(-3px); }
+        .drive-card-top { height:8px; }
+        .drive-body { padding:var(--space-6); }
+        .drive-status-row { display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-3); }
+        .drive-name { font-family:var(--font-display); font-size:var(--text-xl); font-weight:700; margin-bottom:var(--space-3); }
+        .drive-meta { display:flex; flex-direction:column; gap:var(--space-2); font-size:var(--text-sm); color:var(--text-secondary); margin-bottom:var(--space-4); }
+        .drive-meta span { display:flex; align-items:center; gap:var(--space-2); }
+        .drive-meta i { color:var(--success); width:14px; }
+        .drive-footer { padding:var(--space-4) var(--space-6); border-top:1px solid var(--border); background:var(--slate-50); display:flex; gap:var(--space-2); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon"><i class="fas fa-droplet"></i></span>
+                <span class="logo-text">Blood<strong>Net</strong></span>
+            </a>
+            <div class="nav-links">
+                <a href="../index.html" class="nav-link">Home</a>
+                <a href="find-donors.html" class="nav-link">Find Donors</a>
+                <a href="request-blood.html" class="nav-link">Request Blood</a>
+                <a href="drives.html" class="nav-link active">Drives</a>
+                <a href="../db-visualizer/index.html" class="nav-link nav-special"><i class="fas fa-database"></i> DB Viz</a>
+                <a href="donor/login.html" class="btn btn-primary">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="page-hero">
+        <div class="container">
+            <div class="section-header" style="margin-bottom:0">
+                <span class="section-tag">Community</span>
+                <h1 class="section-title">Donation Drives</h1>
+                <p>Find and register for blood donation camps near you</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="drives-grid" id="drivesGrid"></div>
+    </div>
+
+    <script type="module">
+        import { formatDate } from '../js/main.js';
+
+        const DRIVES = [
+            { id:1, name:'World Blood Donor Day Drive', date:'2025-06-14', start:'09:00', end:'17:00', location:'Marina Beach, Chennai', city:'Chennai', bank:'City Blood Bank', status:'Upcoming', organizer:'City Blood Bank', spots:45 },
+            { id:2, name:'IIT Campus Blood Drive',       date:'2025-07-01', start:'10:00', end:'16:00', location:'IIT Madras, Chennai',   city:'Chennai', bank:'General Hospital Bank', status:'Upcoming', organizer:'NSS IIT Madras', spots:80 },
+            { id:3, name:'Summer Save Lives Drive',      date:'2025-05-10', start:'09:00', end:'14:00', location:'Anna Nagar Community Hall',city:'Chennai',bank:'City Blood Bank', status:'Completed', organizer:'Lions Club', spots:0 },
+            { id:4, name:'Hospital Anniversary Drive',   date:'2025-04-15', start:'10:00', end:'15:00', location:'Egmore, Chennai',        city:'Chennai', bank:'General Hospital Bank', status:'Completed', organizer:'General Hospital', spots:0 },
+        ];
+
+        const statusColor = { Upcoming:'#16a34a', Active:'#2563eb', Completed:'#64748b', Cancelled:'#ef4444' };
+        const container = document.getElementById('drivesGrid');
+
+        container.innerHTML = DRIVES.map(d => `
+            <div class="drive-card">
+                <div class="drive-card-top" style="background:${statusColor[d.status]}"></div>
+                <div class="drive-body">
+                    <div class="drive-status-row">
+                        <span class="tag ${d.status==='Upcoming'?'tag-green':d.status==='Completed'?'tag-gray':'tag-blue'}">${d.status}</span>
+                        ${d.spots > 0 ? `<span style="font-size:var(--text-xs);color:var(--success);font-weight:600">${d.spots} spots left</span>` : ''}
+                    </div>
+                    <div class="drive-name">${d.name}</div>
+                    <div class="drive-meta">
+                        <span><i class="fas fa-calendar"></i>${formatDate(d.date)}</span>
+                        <span><i class="fas fa-clock"></i>${d.start} – ${d.end}</span>
+                        <span><i class="fas fa-location-dot"></i>${d.location}</span>
+                        <span><i class="fas fa-hospital"></i>${d.bank}</span>
+                    </div>
+                </div>
+                <div class="drive-footer">
+                    ${d.status === 'Upcoming' ? `<button class="btn btn-primary btn-sm" style="flex:1">Register Now</button>` : `<button class="btn btn-ghost btn-sm" disabled style="flex:1">Drive Completed</button>`}
+                    <button class="btn btn-ghost btn-sm"><i class="fas fa-share-nodes"></i></button>
+                </div>
+            </div>
+        `).join('');
+    </script>
+</body>
+</html>

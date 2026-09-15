@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BloodNet — Save Lives Together</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/home.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="container nav-inner">
+            <a href="index.html" class="logo">
+                <span class="logo-icon"><i class="fas fa-droplet"></i></span>
+                <span class="logo-text">Blood<strong>Net</strong></span>
+            </a>
+            <div class="nav-links" id="navLinks">
+                <a href="index.html" class="nav-link active">Home</a>
+                <a href="pages/find-donors.html" class="nav-link">Find Donors</a>
+                <a href="pages/request-blood.html" class="nav-link">Request Blood</a>
+                <a href="pages/drives.html" class="nav-link">Drives</a>
+                <a href="db-visualizer/index.html" class="nav-link nav-special"><i class="fas fa-database"></i> DB Visualizer</a>
+                <a href="pages/donor/login.html" class="btn btn-outline">Login</a>
+                <a href="pages/donor/register.html" class="btn btn-primary">Register</a>
+            </div>
+            <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg-shapes">
+            <div class="shape shape-1"></div>
+            <div class="shape shape-2"></div>
+            <div class="shape shape-3"></div>
+        </div>
+        <div class="container hero-inner">
+            <div class="hero-content" data-animate="fade-up">
+                <span class="hero-tag"><i class="fas fa-heart-pulse"></i> Life-saving network</span>
+                <h1 class="hero-title">Every Drop<br><em>Counts.</em></h1>
+                <p class="hero-subtitle">Connect with blood donors in your city. Save lives with one simple donation. Join thousands already making a difference.</p>
+                <div class="hero-actions">
+                    <a href="pages/donor/register.html" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus"></i> Become a Donor
+                    </a>
+                    <a href="pages/request-blood.html" class="btn btn-ghost btn-lg">
+                        <i class="fas fa-droplet"></i> Request Blood
+                    </a>
+                </div>
+                <div class="hero-badges">
+                    <div class="badge-item"><i class="fas fa-shield-halved"></i> Verified Donors</div>
+                    <div class="badge-item"><i class="fas fa-clock"></i> 24/7 Support</div>
+                    <div class="badge-item"><i class="fas fa-location-dot"></i> Nearby Matches</div>
+                </div>
+            </div>
+            <div class="hero-visual" data-animate="fade-left">
+                <div class="hero-card">
+                    <div class="hero-card-header">
+                        <span class="pulse-dot"></span>
+                        <span>Live Availability</span>
+                    </div>
+                    <div class="blood-mini-grid" id="heroBloodGrid">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card" data-animate="fade-up" data-delay="0">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-body">
+                        <span class="stat-number" data-target="2500">0</span><span class="stat-plus">+</span>
+                        <p>Registered Donors</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-animate="fade-up" data-delay="100">
+                    <div class="stat-icon"><i class="fas fa-heart"></i></div>
+                    <div class="stat-body">
+                        <span class="stat-number" data-target="10000">0</span><span class="stat-plus">+</span>
+                        <p>Lives Saved</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-animate="fade-up" data-delay="200">
+                    <div class="stat-icon"><i class="fas fa-vial"></i></div>
+                    <div class="stat-body">
+                        <span class="stat-number" data-target="5000">0</span><span class="stat-plus">+</span>
+                        <p>Units Available</p>
+                    </div>
+                </div>
+                <div class="stat-card" data-animate="fade-up" data-delay="300">
+                    <div class="stat-icon"><i class="fas fa-hospital"></i></div>
+                    <div class="stat-body">
+                        <span class="stat-number" data-target="50">0</span><span class="stat-plus">+</span>
+                        <p>Active Drives</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blood Availability -->
+    <section class="availability-section">
+        <div class="container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-tag">Current Status</span>
+                <h2 class="section-title">Blood Availability</h2>
+                <p>Real-time stock levels across our network</p>
+            </div>
+            <div class="blood-grid" id="bloodAvailability" data-animate="fade-up">
+                <!-- Filled by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- How it Works -->
+    <section class="how-section">
+        <div class="container">
+            <div class="section-header" data-animate="fade-up">
+                <span class="section-tag">Simple Process</span>
+                <h2 class="section-title">How it Works</h2>
+            </div>
+            <div class="steps-grid">
+                <div class="step-card" data-animate="fade-up" data-delay="0">
+                    <div class="step-num">01</div>
+                    <div class="step-icon"><i class="fas fa-user-pen"></i></div>
+                    <h3>Register</h3>
+                    <p>Create your free donor profile with your blood type and location details.</p>
+                </div>
+                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step-card" data-animate="fade-up" data-delay="100">
+                    <div class="step-num">02</div>
+                    <div class="step-icon"><i class="fas fa-bell"></i></div>
+                    <h3>Get Notified</h3>
+                    <p>Receive alerts when your blood type is urgently needed nearby.</p>
+                </div>
+                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step-card" data-animate="fade-up" data-delay="200">
+                    <div class="step-num">03</div>
+                    <div class="step-icon"><i class="fas fa-droplet"></i></div>
+                    <h3>Donate</h3>
+                    <p>Schedule and complete your donation at a nearby blood bank or drive.</p>
+                </div>
+                <div class="step-arrow"><i class="fas fa-arrow-right"></i></div>
+                <div class="step-card" data-animate="fade-up" data-delay="300">
+                    <div class="step-num">04</div>
+                    <div class="step-icon"><i class="fas fa-award"></i></div>
+                    <h3>Earn Rewards</h3>
+                    <p>Track your impact, earn badges, and see the lives you've saved.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-box" data-animate="fade-up">
+                <div class="cta-content">
+                    <h2>Ready to save a life today?</h2>
+                    <p>It takes just 10 minutes. Your donation can save up to 3 lives.</p>
+                </div>
+                <div class="cta-actions">
+                    <a href="pages/donor/register.html" class="btn btn-white btn-lg">Start Donating</a>
+                    <a href="db-visualizer/index.html" class="btn btn-outline-white btn-lg"><i class="fas fa-database"></i> View DB Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <span class="logo-icon"><i class="fas fa-droplet"></i></span>
+                    <span class="logo-text">Blood<strong>Net</strong></span>
+                </a>
+                <p>Connecting donors with those in need. Every drop matters.</p>
+            </div>
+            <div class="footer-links">
+                <div class="footer-col">
+                    <h4>Platform</h4>
+                    <a href="pages/find-donors.html">Find Donors</a>
+                    <a href="pages/request-blood.html">Request Blood</a>
+                    <a href="pages/drives.html">Donation Drives</a>
+                    <a href="db-visualizer/index.html">DB Visualizer</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Donors</h4>
+                    <a href="pages/donor/register.html">Register</a>
+                    <a href="pages/donor/login.html">Login</a>
+                    <a href="dashboard.html">Dashboard</a>
+                </div>
+                <div class="footer-col">
+                    <h4>Contact</h4>
+                    <p><i class="fas fa-phone"></i> Emergency: 104</p>
+                    <p><i class="fas fa-envelope"></i> help@bloodnet.in</p>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2025 BloodNet. DBMS Project Demo.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="js/main.js"></script>
+    <script type="module" src="js/components/blood-availability.js"></script>
+</body>
+</html>

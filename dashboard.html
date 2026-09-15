@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — BloodNet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/variables.css">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+<div class="dashboard-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo">
+            <a href="index.html" class="logo">
+                <span class="logo-icon"><i class="fas fa-droplet"></i></span>
+                <span class="logo-text">Blood<strong>Net</strong></span>
+            </a>
+        </div>
+        <div class="sidebar-profile">
+            <div class="avatar-circle" id="avatarCircle">JD</div>
+            <div>
+                <div class="profile-name" id="sidebarName">John Doe</div>
+                <div class="profile-blood" id="sidebarBlood">O+ Donor</div>
+                <div class="profile-avail">● Available</div>
+            </div>
+        </div>
+        <nav class="sidebar-nav">
+            <div class="sidebar-section-label">Main</div>
+            <a href="#" class="sidebar-link active" data-section="overview">
+                <i class="fas fa-house"></i> Overview
+            </a>
+            <a href="#" class="sidebar-link" data-section="profile">
+                <i class="fas fa-user"></i> My Profile
+            </a>
+            <a href="#" class="sidebar-link" data-section="history">
+                <i class="fas fa-heartbeat"></i> Donation History
+            </a>
+            <a href="#" class="sidebar-link" data-section="appointments">
+                <i class="fas fa-calendar-check"></i> Appointments
+            </a>
+            <div class="sidebar-section-label">Community</div>
+            <a href="#" class="sidebar-link" data-section="requests">
+                <i class="fas fa-hand-holding-heart"></i> Blood Requests
+                <span class="badge" id="requestsBadge">2</span>
+            </a>
+            <a href="#" class="sidebar-link" data-section="drives">
+                <i class="fas fa-calendar-alt"></i> Donation Drives
+            </a>
+            <a href="db-visualizer/index.html" class="sidebar-link" style="color:#60a5fa">
+                <i class="fas fa-database"></i> DB Visualizer
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <a href="#" class="sidebar-logout" id="logoutBtn">
+                <i class="fas fa-sign-out-alt"></i> Sign Out
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="dashboard-main">
+        <header class="dash-header">
+            <div class="dash-header-left">
+                <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <h2 class="dash-page-title" id="pageTitle">Overview</h2>
+            </div>
+            <div style="display:flex;align-items:center;gap:var(--space-3)">
+                <a href="db-visualizer/index.html" class="btn btn-outline btn-sm">
+                    <i class="fas fa-database"></i> DB Visualizer
+                </a>
+            </div>
+        </header>
+
+        <div class="dash-content">
+            <!-- Overview Section -->
+            <section id="section-overview">
+                <!-- Quick stats -->
+                <div class="quick-stats-row">
+                    <div class="qs-card">
+                        <div class="qs-icon red"><i class="fas fa-droplet"></i></div>
+                        <div>
+                            <div class="qs-value" id="totalDonations">0</div>
+                            <div class="qs-label">Total Donations</div>
+                        </div>
+                    </div>
+                    <div class="qs-card">
+                        <div class="qs-icon green"><i class="fas fa-heart"></i></div>
+                        <div>
+                            <div class="qs-value" id="livesSaved">0</div>
+                            <div class="qs-label">Lives Saved</div>
+                        </div>
+                    </div>
+                    <div class="qs-card">
+                        <div class="qs-icon blue"><i class="fas fa-calendar-day"></i></div>
+                        <div>
+                            <div class="qs-value" id="daysUntilEligible">—</div>
+                            <div class="qs-label">Days Until Eligible</div>
+                        </div>
+                    </div>
+                    <div class="qs-card">
+                        <div class="qs-icon orange"><i class="fas fa-trophy"></i></div>
+                        <div>
+                            <div class="qs-value" id="donorRank">—</div>
+                            <div class="qs-label">Donor Rank</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dash-grid-2">
+                    <!-- Eligibility card -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span><i class="fas fa-clock" style="color:var(--primary)"></i> Donation Eligibility</span>
+                            <span class="tag tag-green" id="eligibilityTag">Eligible Now</span>
+                        </div>
+                        <div class="card-body">
+                            <p style="font-size:var(--text-sm);color:var(--text-secondary);margin-bottom:var(--space-3)">
+                                Time since last donation
+                            </p>
+                            <div class="eligibility-bar">
+                                <div class="eligibility-fill" id="eligibilityFill" style="width:0%"></div>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;font-size:var(--text-xs);color:var(--text-muted);margin-top:var(--space-1)">
+                                <span>Last donation: <strong id="lastDonationDate">N/A</strong></span>
+                                <span>Next eligible: <strong id="nextDonationDate">Now</strong></span>
+                            </div>
+                            <div style="margin-top:var(--space-6)">
+                                <a href="pages/drives.html" class="btn btn-primary">
+                                    <i class="fas fa-calendar-plus"></i> Schedule Donation
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Blood requests nearby -->
+                    <div class="card">
+                        <div class="card-header">
+                            <span><i class="fas fa-bell" style="color:var(--warning)"></i> Active Requests</span>
+                            <span class="tag tag-yellow">Near You</span>
+                        </div>
+                        <div class="card-body" id="activeRequests">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upcoming drives -->
+                <div class="card" style="margin-top:var(--space-6)">
+                    <div class="card-header">
+                        <span><i class="fas fa-calendar-heart" style="color:var(--success)"></i> Upcoming Donation Drives</span>
+                        <a href="pages/drives.html" class="btn btn-outline btn-sm">View all</a>
+                    </div>
+                    <div class="card-body" id="upcomingDrives">
+                        <!-- Filled by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Other sections (hidden by default) -->
+            <section id="section-profile"      style="display:none">
+                <div class="card"><div class="card-header">My Profile</div>
+                <div class="card-body"><p style="color:var(--text-secondary)">Profile editor — connect to <code>api/donor/register.php</code> to load and save data.</p></div></div>
+            </section>
+            <section id="section-history"      style="display:none">
+                <div class="card"><div class="card-header"><i class="fas fa-heartbeat" style="color:var(--primary)"></i> Donation History</div>
+                <div class="card-body" id="historyTable"><p style="color:var(--text-secondary)">Loading history…</p></div></div>
+            </section>
+            <section id="section-appointments" style="display:none">
+                <div class="card"><div class="card-header">Appointments</div>
+                <div class="card-body"><p style="color:var(--text-secondary)">Your scheduled appointments will appear here.</p></div></div>
+            </section>
+            <section id="section-requests"     style="display:none">
+                <div class="card"><div class="card-header">Blood Requests</div>
+                <div class="card-body" id="requestsTable"></div></div>
+            </section>
+            <section id="section-drives"       style="display:none">
+                <div class="card"><div class="card-header">All Donation Drives</div>
+                <div class="card-body" id="drivesTable"></div></div>
+            </section>
+        </div>
+    </div>
+</div>
+
+<script type="module">
+    import { showToast, auth, animateCounter, formatDate, daysSince } from './js/main.js';
+
+    // Auth guard (disabled for demo)
+    // if (!auth.isLoggedIn()) window.location.href = 'pages/donor/login.html';
+
+    // Demo donor data
+    const donor = auth.getDonor() || {
+        full_name: 'John Doe', blood_group: 'O+', last_donation_date: '2024-10-15'
+    };
+
+    // Set profile info
+    document.getElementById('sidebarName').textContent = donor.full_name;
+    document.getElementById('sidebarBlood').textContent = `${donor.blood_group} Donor`;
+    document.getElementById('avatarCircle').textContent = donor.full_name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+
+    // Eligibility calculation (90 day window)
+    const ELIGIBILITY_DAYS = 90;
+    if (donor.last_donation_date) {
+        const days = daysSince(donor.last_donation_date);
+        const pct = Math.min(100, (days / ELIGIBILITY_DAYS) * 100);
+        const eligible = days >= ELIGIBILITY_DAYS;
+        document.getElementById('eligibilityFill').style.width = pct + '%';
+        document.getElementById('eligibilityFill').style.background = eligible ? 'var(--success)' : 'var(--primary)';
+        document.getElementById('lastDonationDate').textContent = formatDate(donor.last_donation_date);
+        document.getElementById('daysUntilEligible').textContent = eligible ? '✓' : (ELIGIBILITY_DAYS - days);
+        if (!eligible) {
+            document.getElementById('eligibilityTag').textContent = `${ELIGIBILITY_DAYS - days} days left`;
+            document.getElementById('eligibilityTag').className = 'tag tag-yellow';
+        }
+        document.getElementById('nextDonationDate').textContent = eligible
+            ? 'Today!'
+            : formatDate(new Date(new Date(donor.last_donation_date).getTime() + ELIGIBILITY_DAYS * 86400000));
+    }
+
+    // Demo counters
+    setTimeout(() => {
+        animateCounter(document.getElementById('totalDonations'), 4);
+        animateCounter(document.getElementById('livesSaved'), 12);
+    }, 300);
+    document.getElementById('donorRank').textContent = 'Silver';
+
+    // Active requests
+    const requests = [
+        { group: 'O+', hospital: 'Apollo Hospital', urgency: 'Critical', city: 'Chennai' },
+        { group: 'A-', hospital: 'Govt General',    urgency: 'High',     city: 'Chennai' },
+    ];
+    document.getElementById('activeRequests').innerHTML = requests.map(r => `
+        <div style="display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) 0;border-bottom:1px solid var(--border)">
+            <div class="blood-pill">${r.group}</div>
+            <div style="flex:1">
+                <div style="font-weight:600;font-size:var(--text-sm)">${r.hospital}</div>
+                <div style="font-size:var(--text-xs);color:var(--text-muted)">${r.city}</div>
+            </div>
+            <span class="tag ${r.urgency === 'Critical' ? 'tag-red' : 'tag-yellow'}">${r.urgency}</span>
+        </div>
+    `).join('') + `<div style="margin-top:var(--space-4)"><a href="pages/request-blood.html" class="btn btn-ghost btn-sm">See all requests</a></div>`;
+
+    // Upcoming drives
+    const drives = [
+        { name: 'World Blood Donor Day Drive', date: '2025-06-14', location: 'Marina Beach, Chennai', spots: 45 },
+        { name: 'IIT Campus Blood Drive',       date: '2025-07-01', location: 'IIT Madras, Chennai',   spots: 80 },
+    ];
+    document.getElementById('upcomingDrives').innerHTML = `
+        <div class="table-wrapper"><table class="data-table">
+            <thead><tr><th>Drive Name</th><th>Date</th><th>Location</th><th>Spots</th><th>Action</th></tr></thead>
+            <tbody>${drives.map(d => `
+                <tr>
+                    <td><strong>${d.name}</strong></td>
+                    <td>${formatDate(d.date)}</td>
+                    <td>${d.location}</td>
+                    <td><span class="tag tag-green">${d.spots} open</span></td>
+                    <td><button class="btn btn-primary btn-sm">Register</button></td>
+                </tr>
+            `).join('')}</tbody>
+        </table></div>`;
+
+    // Sidebar nav
+    document.querySelectorAll('.sidebar-link[data-section]').forEach(link => {
+        link.addEventListener('click', e => {
+            e.preventDefault();
+            const sec = link.dataset.section;
+            document.querySelectorAll('.sidebar-link').forEach(l => l.classList.remove('active'));
+            link.classList.add('active');
+            document.querySelectorAll('[id^="section-"]').forEach(s => s.style.display = 'none');
+            document.getElementById(`section-${sec}`).style.display = 'block';
+            document.getElementById('pageTitle').textContent = link.textContent.trim();
+        });
+    });
+
+    // Mobile sidebar toggle
+    document.getElementById('sidebarToggle').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('open');
+    });
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', e => {
+        e.preventDefault();
+        auth.logout();
+    });
+</script>
+</body>
+</html>

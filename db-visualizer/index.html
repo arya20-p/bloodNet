@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Visualizer — BloodNet DBMS Project</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/variables.css">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="visualizer.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="container nav-inner">
+            <a href="../index.html" class="logo">
+                <span class="logo-icon"><i class="fas fa-droplet"></i></span>
+                <span class="logo-text">Blood<strong>Net</strong></span>
+            </a>
+            <div class="viz-breadcrumb">
+                <a href="../index.html"><i class="fas fa-house"></i></a>
+                <span>/</span>
+                <span class="active"><i class="fas fa-database"></i> DB Visualizer</span>
+            </div>
+            <a href="../index.html" class="btn btn-outline btn-sm">← Back to App</a>
+        </div>
+    </nav>
+
+    <div class="viz-layout">
+        <!-- Left panel: controls -->
+        <aside class="viz-sidebar">
+            <div class="viz-sidebar-header">
+                <h2><i class="fas fa-database"></i> Database Explorer</h2>
+                <p>Visualize the BloodNet schema live</p>
+            </div>
+
+            <nav class="viz-nav">
+                <button class="viz-nav-btn active" data-view="schema">
+                    <i class="fas fa-diagram-project"></i> ER Diagram
+                </button>
+                <button class="viz-nav-btn" data-view="tables">
+                    <i class="fas fa-table"></i> Table Browser
+                </button>
+                <button class="viz-nav-btn" data-view="flow">
+                    <i class="fas fa-arrow-right-arrow-left"></i> Data Flow
+                </button>
+                <button class="viz-nav-btn" data-view="queries">
+                    <i class="fas fa-terminal"></i> Query Simulator
+                </button>
+                <button class="viz-nav-btn" data-view="stats">
+                    <i class="fas fa-chart-bar"></i> Live Stats
+                </button>
+            </nav>
+
+            <div class="viz-tables-list">
+                <div class="viz-tables-label">Tables</div>
+                <div class="viz-table-item active" data-table="donors">
+                    <i class="fas fa-circle" style="color: #ef4444"></i> donors
+                    <span class="viz-table-count">6 rows (demo)</span>
+                </div>
+                <div class="viz-table-item" data-table="blood_banks">
+                    <i class="fas fa-circle" style="color: #f97316"></i> blood_banks
+                    <span class="viz-table-count">2 rows</span>
+                </div>
+                <div class="viz-table-item" data-table="blood_inventory">
+                    <i class="fas fa-circle" style="color: #8b5cf6"></i> blood_inventory
+                    <span class="viz-table-count">8 rows</span>
+                </div>
+                <div class="viz-table-item" data-table="blood_requests">
+                    <i class="fas fa-circle" style="color: #06b6d4"></i> blood_requests
+                    <span class="viz-table-count">5 rows</span>
+                </div>
+                <div class="viz-table-item" data-table="donation_drives">
+                    <i class="fas fa-circle" style="color: #16a34a"></i> donation_drives
+                    <span class="viz-table-count">4 rows</span>
+                </div>
+                <div class="viz-table-item" data-table="appointments">
+                    <i class="fas fa-circle" style="color: #d97706"></i> appointments
+                    <span class="viz-table-count">3 rows</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main panel -->
+        <main class="viz-main">
+            <!-- ER Diagram view -->
+            <section class="viz-view active" id="view-schema">
+                <div class="viz-view-header">
+                    <h3>Entity-Relationship Diagram</h3>
+                    <p>Visual representation of the BloodNet database schema with relationships</p>
+                    <div class="viz-legend">
+                        <span class="legend-item"><span class="legend-dot pk"></span> Primary Key</span>
+                        <span class="legend-item"><span class="legend-dot fk"></span> Foreign Key</span>
+                        <span class="legend-item"><span class="legend-line solid"></span> One-to-Many</span>
+                    </div>
+                </div>
+                <div class="er-canvas" id="erCanvas">
+                    <!-- Rendered by JS -->
+                </div>
+            </section>
+
+            <!-- Table Browser view -->
+            <section class="viz-view" id="view-tables">
+                <div class="viz-view-header">
+                    <h3>Table Browser</h3>
+                    <p>Explore each table's structure and sample data</p>
+                    <div class="table-selector-row">
+                        <select class="form-control" id="tableSelect" style="max-width:220px">
+                            <option value="donors">donors</option>
+                            <option value="blood_banks">blood_banks</option>
+                            <option value="blood_inventory">blood_inventory</option>
+                            <option value="blood_requests">blood_requests</option>
+                            <option value="donation_drives">donation_drives</option>
+                            <option value="appointments">appointments</option>
+                        </select>
+                        <div class="tab-toggle">
+                            <button class="tab-btn active" data-tab="schema">Schema</button>
+                            <button class="tab-btn" data-tab="data">Sample Data</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="tableSchemaView"><!-- JS --></div>
+                <div id="tableDataView" style="display:none"><!-- JS --></div>
+            </section>
+
+            <!-- Data Flow view -->
+            <section class="viz-view" id="view-flow">
+                <div class="viz-view-header">
+                    <h3>Data Flow Diagram</h3>
+                    <p>How data moves through the system — from registration to donation to request fulfillment</p>
+                </div>
+                <div class="flow-diagram" id="flowDiagram">
+                    <!-- Rendered by JS -->
+                </div>
+            </section>
+
+            <!-- Query Simulator view -->
+            <section class="viz-view" id="view-queries">
+                <div class="viz-view-header">
+                    <h3>Query Simulator</h3>
+                    <p>Select and run common SQL queries to see how the database works</p>
+                </div>
+                <div class="query-layout">
+                    <div class="query-presets">
+                        <div class="preset-label">Common Queries</div>
+                        <button class="preset-btn active" data-query="find-donors">Find donors by blood group</button>
+                        <button class="preset-btn" data-query="inventory-check">Check inventory levels</button>
+                        <button class="preset-btn" data-query="pending-requests">View pending requests</button>
+                        <button class="preset-btn" data-query="upcoming-drives">Upcoming donation drives</button>
+                        <button class="preset-btn" data-query="donor-history">Donor donation history</button>
+                        <button class="preset-btn" data-query="join-example">JOIN: donors + appointments</button>
+                        <button class="preset-btn" data-query="aggregate">Aggregate: blood by group</button>
+                    </div>
+                    <div class="query-editor-panel">
+                        <div class="query-sql-box">
+                            <div class="sql-header">
+                                <span><i class="fas fa-code"></i> SQL</span>
+                                <button class="btn btn-primary btn-sm" id="runQuery"><i class="fas fa-play"></i> Run</button>
+                            </div>
+                            <pre class="sql-code" id="sqlCode">-- Select a query from the left panel</pre>
+                        </div>
+                        <div class="query-explain-box" id="queryExplain"></div>
+                        <div class="query-result-box">
+                            <div class="result-header">Result Set</div>
+                            <div id="queryResult" class="result-table-wrap">
+                                <p style="color:var(--text-muted); padding:1rem;">Run a query to see results</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats view -->
+            <section class="viz-view" id="view-stats">
+                <div class="viz-view-header">
+                    <h3>Live Statistics Dashboard</h3>
+                    <p>Overview of database activity and metrics</p>
+                </div>
+                <div class="stats-viz-grid" id="statsVizGrid">
+                    <!-- Rendered by JS -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="module" src="visualizer.js"></script>
+</body>
+</html>

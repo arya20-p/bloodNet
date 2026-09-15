@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login — BloodNet</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/variables.css">
+    <link rel="stylesheet" href="../../css/base.css">
+    <link rel="stylesheet" href="../../css/components.css">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<body>
+    <div class="auth-layout">
+        <!-- Left Panel -->
+        <div class="auth-panel-left">
+            <a href="../../index.html" class="auth-logo">
+                <span class="logo-icon"><i class="fas fa-droplet"></i></span>
+                <span class="logo-text">Blood<strong>Net</strong></span>
+            </a>
+            <div class="auth-left-content">
+                <h2>Every donation<br>saves 3 lives.</h2>
+                <p>Join thousands of registered donors making a real difference across India.</p>
+                <div class="auth-stats">
+                    <div class="auth-stat"><span class="auth-stat-num">2,500+</span><span>Donors</span></div>
+                    <div class="auth-stat"><span class="auth-stat-num">10K+</span><span>Lives Saved</span></div>
+                    <div class="auth-stat"><span class="auth-stat-num">50+</span><span>Active Drives</span></div>
+                </div>
+            </div>
+            <div class="auth-bg-shape"></div>
+        </div>
+
+        <!-- Right Panel -->
+        <div class="auth-panel-right">
+            <div class="auth-form-wrap">
+                <div class="auth-form-header">
+                    <h1>Welcome back</h1>
+                    <p>Sign in to your donor account</p>
+                </div>
+
+                <div id="loginAlert" class="alert alert-danger" style="display:none">
+                    <i class="fas fa-circle-exclamation"></i>
+                    <span id="loginAlertMsg">Invalid email or password.</span>
+                </div>
+
+                <form id="loginForm" novalidate>
+                    <div class="form-group">
+                        <label class="form-label" for="email">Email address <span class="required">*</span></label>
+                        <div class="input-icon-wrap">
+                            <i class="fas fa-envelope input-icon"></i>
+                            <input type="email" class="form-control input-with-icon" id="email" placeholder="you@example.com" autocomplete="email" required>
+                        </div>
+                        <div class="form-error" id="emailError">Please enter a valid email.</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="password">
+                            Password <span class="required">*</span>
+                            <a href="#" class="forgot-link">Forgot password?</a>
+                        </label>
+                        <div class="input-icon-wrap">
+                            <i class="fas fa-lock input-icon"></i>
+                            <input type="password" class="form-control input-with-icon" id="password" placeholder="Your password" autocomplete="current-password" required>
+                            <button type="button" class="toggle-password" id="togglePwd" aria-label="Show password">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                        <div class="form-error" id="passwordError">Password is required.</div>
+                    </div>
+
+                    <div class="form-group form-checkbox">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="rememberMe"> Remember me for 30 days
+                        </label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-lg btn-full" id="loginBtn">
+                        <span id="loginBtnText">Sign In</span>
+                        <span id="loginSpinner" class="spinner" style="display:none"></span>
+                    </button>
+                </form>
+
+                <div class="auth-divider"><span>or sign in with demo</span></div>
+
+                <button class="btn btn-ghost btn-lg btn-full" id="demoLogin">
+                    <i class="fas fa-flask"></i> Use Demo Account
+                </button>
+
+                <p class="auth-switch">
+                    Don't have an account? <a href="register.html">Register as a Donor</a>
+                </p>
+                <p class="auth-switch" style="margin-top:0.25rem">
+                    Blood bank? <a href="../../pages/blood-bank/login.html">Bank Login →</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { showToast, auth, apiCall } from '../../js/main.js';
+
+        // Toggle password visibility
+        document.getElementById('togglePwd').addEventListener('click', function() {
+            const pwd = document.getElementById('password');
+            const icon = this.querySelector('i');
+            if (pwd.type === 'password') { pwd.type = 'text'; icon.className = 'fas fa-eye-slash'; }
+            else { pwd.type = 'password'; icon.className = 'fas fa-eye'; }
+        });
+
+        // Form submit
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email    = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            let valid = true;
+
+            if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('email').classList.add('error');
+                valid = false;
+            } else { document.getElementById('email').classList.remove('error'); }
+
+            if (!password) {
+                document.getElementById('password').classList.add('error');
+                valid = false;
+            } else { document.getElementById('password').classList.remove('error'); }
+
+            if (!valid) return;
+
+            // Loading state
+            document.getElementById('loginBtnText').textContent = 'Signing in…';
+            document.getElementById('loginSpinner').style.display = 'inline-block';
+            document.getElementById('loginBtn').disabled = true;
+            document.getElementById('loginAlert').style.display = 'none';
+
+            try {
+                const data = await apiCall('donor/login.php', { method: 'POST', body: { email, password } });
+                if (data.status === 'success') {
+                    auth.setSession(data.token, data.donor);
+                    showToast('Login successful! Redirecting…', 'success');
+                    setTimeout(() => window.location.href = '../../dashboard.html', 1000);
+                } else { throw new Error(data.message); }
+            } catch (err) {
+                document.getElementById('loginAlert').style.display = 'flex';
+                document.getElementById('loginAlertMsg').textContent = err.message || 'Login failed. Please try again.';
+                document.getElementById('loginBtnText').textContent = 'Sign In';
+                document.getElementById('loginSpinner').style.display = 'none';
+                document.getElementById('loginBtn').disabled = false;
+            }
+        });
+
+        // Demo login
+        document.getElementById('demoLogin').addEventListener('click', () => {
+            document.getElementById('email').value    = 'john@example.com';
+            document.getElementById('password').value = 'password';
+            showToast('Demo credentials filled in!', 'info');
+        });
+    </script>
+</body>
+</html>
